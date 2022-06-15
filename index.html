@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
+<!-- we import arjs version without NFT but with marker + location based support -->
+<script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+
+<body style="margin : 0px; overflow: hidden;">
+  <a-scene embedded arjs='detectionMode: mono_and_matrix; matrixCodeType: 4x4_BCH_13_9_3;' detectionMode>
+
+    <a-assets>
+      <video id="alpha2" loop="true" src="https://arjs-cors-proxy.herokuapp.com/https://ataylor32.github.io/demo-html5-transparent-video/video.webm" autoplay muted></video>
+      <video id="trailer" loop="false" src="assets/big-buck-bunny_trailer.webm" autoplay></video>
+    </a-assets>
+
+    <a-marker type="barcode" value="0">
+      <a-entity position="0 0 0" scale="0.05 0.05 0.05"
+        gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf">
+      </a-entity>
+    </a-marker>
+
+    <a-marker type="barcode" value="1">
+      <a-image src="assets/asset.jpeg" scale="1 1 1" class="clickable" rotation="-90 0 0" gesture-handler></a-image>
+    </a-marker>
+
+    <a-marker type="barcode" value="2">
+      <a-entity gltf-model="assets/magnemite/scene.gltf" rotation="0 180 0" position="0 0 0" scale="0.15 0.15 0.15" animation-mixer/>
+    </a-marker>
+
+    <a-marker type="barcode" value="3">
+      <a-video id = "vid2"  scale="1 1 1" rotation="-90 0 0" src="#alpha2" autoplay muted></a-video>
+    </a-marker>
+
+    <a-marker type="barcode" value="5">
+      <a-video src="#trailer" width="1" height="1" position="0 0 0" rotation="-90 0 0"></a-video>
+      <!-- <a-video src="assets/big-buck-bunny_trailer.webm" rotation="-90 0 0" loop="false"></a-video> -->
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
+</body>
+
+</html>
