@@ -3,16 +3,18 @@
 <script src="https://aframe.io/releases/1.0.4/aframe.min.js"></script>
 <!-- we import arjs version without NFT but with marker + location based support -->
 <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
+<script src="https://raw.githack.com/donmccurdy/aframe-extras/master/dist/aframe-extras.loaders.min.js"></script>
 
 <script>
+  let treeIndex = 0;
   window.onload = function () {
     document
-      .querySelector(".say-hi-button")
+      .querySelector(".action-button")
       .addEventListener("click", function () {
-        // here you can change also a-scene or a-entity properties, like
-        // changing your 3D model source, size, position and so on
-        // or you can just open links, trigger actions...
-        alert("Hi there!");
+        // next image
+        const gallery = document.querySelector("#gallery");
+        treeIndex = (treeIndex + 1) % 4;
+        gallery.setAttribute('src', `assets/trees/tree${treeIndex}.jpg`)
       });
   };
 
@@ -41,7 +43,28 @@
         }
     }
 });
-  
+
+  // https://medium.com/swlh/how-to-handle-click-events-on-ar-js-f397ea5994d
+  AFRAME.registerComponent('galleryhandler', {
+    init: function () {
+      // show/hide button
+      var marker = this.el;
+      marker.addEventListener('markerFound', () => {
+        var markerId = marker.id;
+        console.log('! markerFound', markerId);
+
+        let button = document.querySelector(".action-button");
+        button.innerText = 'Next Image';
+        button.style.display = "block";
+      })
+      marker.addEventListener('markerLost', () => {
+        var markerId = marker.id;
+        console.log('! markerLost', markerId);
+        document.querySelector(".action-button").style.display = "none";
+
+      })
+    }
+  });
 </script>
 <style>
   .buttons {
@@ -56,48 +79,46 @@
     z-index: 10;
   }
 
-  .say-hi-button {
+  .action-button {
+    display: none;
     padding: 0.25em;
     border-radius: 4px;
     border: none;
     background: white;
     color: black;
-    width: 4em;
+    width: 10em;
     height: 2em;
   }
 </style>
 
 <body style="margin : 0px; overflow: hidden;">
-  <a-scene embedded arjs='detectionMode: mono_and_matrix; matrixCodeType: 4x4_BCH_13_9_3;' detectionMode>
+  <a-scene embedded arjs='detectionMode: mono_and_matrix; matrixCodeType: 4x4_BCH_13_9_3;' cursor="rayOrigin: mouse" detectionMode>
 
     <a-assets>
       <video id="alpha2" loop="true" src="https://arjs-cors-proxy.herokuapp.com/https://ataylor32.github.io/demo-html5-transparent-video/video.webm" autoplay muted></video>
-      <video id="trailer" loop="true" src="assets/big-buck-bunny_trailer.webm" autoplay></video>
-    </a-assets>
+      <video id="trailer" loop="true" src="assets/big-buck-bunny_trailer.webm" autoplay muted></video>
+      <a-asset-item id="stormtrooper" src="assets/dancing_stormtrooper/scene.gltf"></a-asset-item>
+  </a-assets>
 
-    <a-marker type="barcode" value="0">
-      <a-entity position="0 0 0" scale="0.05 0.05 0.05"
-        gltf-model="https://arjs-cors-proxy.herokuapp.com/https://raw.githack.com/AR-js-org/AR.js/master/aframe/examples/image-tracking/nft/trex/scene.gltf">
+    <a-marker type="barcode" value="0" smooth="true">
+      <a-entity position="0 0 0" scale="1 1 1"
+        gltf-model="#stormtrooper"
+        animation-mixer>
       </a-entity>
     </a-marker>
 
     <a-marker type="barcode" value="1">
-      <a-image src="assets/asset.jpeg" scale="1 1 1" class="clickable" rotation="-90 0 0" gesture-handler></a-image>
-    </a-marker>
-
-    <a-marker type="barcode" value="2">
-      <a-entity gltf-model="assets/magnemite/scene.gltf" rotation="0 0 0" position="0 0 0" scale="0.1 0.1 0.1" animation-mixer/>
+      <a-image src="assets/asset.jpeg" scale="1 1 1" rotation="-90 0 0" animation="property: position; to: 5 0 0; dur: 2000; easing: easeInQuad; loop: true; dir: alternate">
+      </a-image>
     </a-marker>
 
     <a-marker type="barcode" value="3" videohandler="target: #alpha2">
-      <a-video id = "vid2"  scale="1 1 1" rotation="-90 0 0" src="#alpha2" autoplay muted></a-video>
+      <a-video id = "vid2"  scale="1 1 1" rotation="-90 0 0" src="#alpha2"></a-video>
     </a-marker>
 
-    <a-marker type="barcode" value="5" markerhandler videohandler="target: #trailer">
+    <a-marker type="barcode" value="5" videohandler="target: #trailer">
       <a-video src="#trailer" scale="1 1 1" rotation="-90 0 0"></a-video>
-      <!-- <a-video src="assets/big-buck-bunny_trailer.webm" rotation="-90 0 0" loop="false"></a-video> -->
     </a-marker>
-
 
     <a-marker type="barcode" value="6">
       <a-box position="-.25 0.125 .25" width=".25" height=".25" depth=".25" rotation="0 45 0" color="#4CC3D9"></a-box>
@@ -105,11 +126,15 @@
       <a-cylinder position=".25 0.1875 .25" radius="0.125" height=".375" color="#FFC65D"></a-cylinder>
       <a-plane position="0 0 0" rotation="-90 0 0" width="1" height="1" color="#7BC8A4"></a-plane>
     </a-marker>
+
+    <a-marker id="gallery-marker" type="barcode" value="8" size=".06" smooth="true"  smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" galleryhandler>
+      <a-image id="gallery" src="assets/trees/tree1.jpg" scale="4 4 1" position="0 0 3" rotation="-90 0 0"></a-image>
+    </a-marker>
+
     <a-entity camera></a-entity>
   </a-scene>
-
   <div class="buttons">
-    <button class="say-hi-button">Hi</button>
+    <button class="action-button">Hi</button>
   </div>  
 </body>
 
