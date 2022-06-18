@@ -14,7 +14,7 @@
         // next image
         const gallery = document.querySelector("#gallery");
         treeIndex = (treeIndex + 1) % 4;
-        gallery.setAttribute('src', `assets/trees/tree${treeIndex}.jpg`)
+        gallery.setAttribute('src', `#tree${treeIndex}`)
       });
   };
 
@@ -98,6 +98,10 @@
       <video id="alpha2" loop="true" src="https://arjs-cors-proxy.herokuapp.com/https://ataylor32.github.io/demo-html5-transparent-video/video.webm" autoplay muted></video>
       <video id="trailer" loop="true" src="assets/big-buck-bunny_trailer.webm" autoplay muted></video>
       <a-asset-item id="stormtrooper" src="assets/dancing_stormtrooper/scene.gltf"></a-asset-item>
+      <img id="tree0" src="assets/trees/tree0.jpg">
+      <img id="tree1" src="assets/trees/tree1.jpg">
+      <img id="tree2" src="assets/trees/tree2.jpg">
+      <img id="tree3" src="assets/trees/tree3.jpg">
   </a-assets>
 
     <a-marker type="barcode" value="0" smooth="true">
@@ -128,7 +132,7 @@
     </a-marker>
 
     <a-marker id="gallery-marker" type="barcode" value="8" size=".06" smooth="true"  smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" galleryhandler>
-      <a-image id="gallery" src="assets/trees/tree1.jpg" scale="4 4 1" position="0 0 3" rotation="-90 0 0"></a-image>
+      <a-image id="gallery" src="#tree0" scale="4 4 1" position="0 0 3" rotation="-90 0 0"></a-image>
     </a-marker>
 
     <a-entity camera></a-entity>
